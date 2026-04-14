@@ -23,6 +23,16 @@ st.sidebar.header("Settings")
 
 ticker = st.sidebar.text_input("Stock Ticker", value="AAPL").upper().strip()
 
+# Default date range: one year back from today
+default_start = date.today() - timedelta(days=365)
+start_date = st.sidebar.date_input("Start Date", value=default_start)
+end_date = st.sidebar.date_input("End Date", value=date.today())
+
+# Validate that the date range makes sense
+if start_date >= end_date:
+    st.sidebar.error("Start date must be before end date.")
+    st.stop()
+    
 # -- Data download ----------------------------------------
 # We wrap the download in st.cache_data so repeated runs with
 # the same inputs don't re-download every time. The ttl (time-to-live)
