@@ -10,6 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import date, timedelta
 import math
+import time
 
 # -- Page configuration ----------------------------------
 # st.set_page_config must be the FIRST Streamlit command in the script.
@@ -29,10 +30,26 @@ ticker = st.sidebar.text_input("Stock Ticker", value="AAPL").upper().strip()
 @st.cache_data(show_spinner="Fetching data...", ttl=3600)
 def load_data(ticker: str) -> pd.DataFrame:
     """Download the most recent year of daily data from Yahoo Finance."""
-    end = date.today()
-    start = end - timedelta(days=365)
-    df = yf.download(ticker, start=start, end=end, progress=False)
-    return df
+    for attempt in range(3):
+        try:
+            df = yf.download(
+                ticker,
+                period="1y",
+                interval="1d",
+                progress=False,
+                threads=False,
+                auto_adjust=False,
+                timeout=20,
+            )
+            if not df.empty:
+                return df
+        except Exception as e:
+            if attempt == 2:
+                st.error(f"Failed to download data: {e}")
+        time.sleep(2)
+
+    return pd.DataFrame()
+
 
 # -- Main logic -------------------------------------------
 if ticker:
