@@ -5,3 +5,4 @@ plotly
 datetime
 math
 statsmodels
+scipy
