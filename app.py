@@ -14,7 +14,7 @@ from plotly.subplots import make_subplots
 from datetime import date, timedelta
 import math
 from scipy import stats
-
+import statsmodels
 # ── Page config (MUST be first Streamlit call) ─────────────────────────────
 st.set_page_config(
     page_title="StockScope — Multi-Stock Analysis",
